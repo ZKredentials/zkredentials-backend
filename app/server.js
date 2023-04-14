@@ -55,9 +55,6 @@ app.post("/generate", async (req, res) => {
               id
               name
               stargazerCount
-              forks {
-                totalCount
-              }
             }
           }
           pullRequests{
