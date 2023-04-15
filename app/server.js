@@ -69,6 +69,7 @@ app.get("/github/login", (req, res) => {
 app.post("/generate", async (req, res) => {
   try {
     const access_token = req.body.token;
+    const address = req.body.address;
     const sponsorsThreshold = req.body.sponsors;
     const starredThreshold = req.body.starred;
     const prsThreshold = req.body.prs;
@@ -112,6 +113,7 @@ app.post("/generate", async (req, res) => {
     const prsProofFileCID = await storeFiles(prsProofFile)
 
     const resumeFile = await makeFileObjects({
+      address,
       prs: prsProofFileCID,
       prsThreshold,
       starred: starredProofFileCID,
