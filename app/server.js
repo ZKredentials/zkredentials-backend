@@ -36,6 +36,13 @@ function makeFileObjects (obj, name) {
   return files
 }
 
+function makeStringFile (txt, name) {
+  const files = [
+    new File([txt], `${name}.txt`),
+  ]
+  return files
+}
+
 async function storeFiles (files) {
   const client = makeStorageClient()
   const cid = await client.put(files)
@@ -97,23 +104,20 @@ app.post("/generate", async (req, res) => {
     const sponsorProof = await generateProof(sponsors, sponsorsThreshold);
     const starredProof = await generateProof(starred, starredThreshold);
     const prsProof = await generateProof(prs, prsThreshold);
-    const sponsorProofFile = await makeFileObjects({
-    sponsorProof: sponsorProof.proof
-    }, 'sponsorProof')
+    const sponsorProofFile = await makeStringFile(sponsorProof.proof, 'sponsorProof')
     const sponsorProofFileCID = await storeFiles(sponsorProofFile)
-    const starredProofFile = await makeFileObjects({
-    starredProof: starredProof.proof
-    }, 'starredProof')
+    const starredProofFile = await makeStringFile(starredProof.proof, 'starredProof')
     const starredProofFileCID = await storeFiles(starredProofFile)
-    const prsProofFile = await makeFileObjects({
-    prsProof: prsProof.proof
-    }, 'prsProof')
+    const prsProofFile = await makeStringFile(prsProof.proof, 'prsProof')
     const prsProofFileCID = await storeFiles(prsProofFile)
 
     const resumeFile = await makeFileObjects({
       prs: prsProofFileCID,
+      prsThreshold,
       starred: starredProofFileCID,
-      sponsor: sponsorProofFileCID
+      starredThreshold,
+      sponsor: sponsorProofFileCID,
+      sponsorsThreshold
       }, 'resume')
     const resumeCID = await storeFiles(resumeFile)
     res.send({
