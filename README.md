@@ -1,4 +1,4 @@
-# Project Name
+# ZKredentials - Backend and Smart Contracts
 
 Brief description of the project.
 
