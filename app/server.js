@@ -129,7 +129,7 @@ app.post("/generate", async (req, res) => {
         starredThreshold,}),
       ...(sponsorsThreshold && {       sponsor: sponsorProofFileCID,
         sponsorsThreshold})
-      }, 'resume.json')
+      }, 'resume')
     const resumeCID = await storeFiles(resumeFile)
     res.send({
       cid: resumeCID
