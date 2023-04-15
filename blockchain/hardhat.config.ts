@@ -150,6 +150,25 @@ module.exports = {
       accounts: [PRIVATE_KEY],
       saveDeployments: true,
     },
+    taiko_testnet: {
+      url: 'https://l2rpc.hackathon.taiko.xyz',
+      chainId: 167002,
+      accounts: [PRIVATE_KEY],
+      saveDeployments: true,
+    },
+    chiado: {
+      url: 'https://rpc.chiadochain.net',
+      chainId: 10200,
+      accounts: [PRIVATE_KEY],
+      saveDeployments: true,
+      gasPrice: 1000000000,
+    },
+    linea: {
+      url: 'https://rpc.goerli.linea.build/',
+      chainId: 59140,
+      accounts: [PRIVATE_KEY],
+      saveDeployments: true,
+    },
   },
   solidity: {
     compilers: [
