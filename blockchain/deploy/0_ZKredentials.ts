@@ -1,17 +1,28 @@
-import "dotenv/config";
+import 'dotenv/config';
 
-import { ethers } from "hardhat";
+import { ethers } from 'hardhat';
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("ZKredentialsWorldID", {
+  await deploy('ZKredentialsWorldID', {
+    from: deployer,
+    log: true,
+    args: [],
+  });
+  await deploy('ZKredentialsWorldID', {
+    from: deployer,
+    log: true,
+    args: [],
+  });
+
+  await deploy('ZKredentialsTwitter', {
     from: deployer,
     log: true,
     args: [],
   });
 };
 
-module.exports.tags = ["ZKredentials"];
+module.exports.tags = ['ZKredentials'];

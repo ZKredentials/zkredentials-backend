@@ -12,12 +12,13 @@ contract ZKredentialsWorldID is ERC721 {
     uint256 public tokenId = 1;
     event Registered(address indexed user);
     event TokenURIUpdated(address indexed user, string tokenURI);
+
     constructor() ERC721("ZKredentials WorldID", "ZKWID") {}
 
     function mint(string memory cid) external {
         // Users can only have 1 NFT
         register();
-        setTokenURI(string(abi.encodePacked("ipfs://", cid, "/")));
+        setTokenURI(cid);
         _safeMint(msg.sender, tokenId);
         tokenId++;
     }
@@ -30,10 +31,6 @@ contract ZKredentialsWorldID is ERC721 {
     }
 
     function setTokenURI(string memory cid) public {
-        require(
-            _exists(tokenId),
-            "ERC721Metadata: URI set of nonexistent token"
-        );
         _tokenURIs[msg.sender] = string(abi.encodePacked("ipfs://", cid, "/"));
         emit TokenURIUpdated(msg.sender, _tokenURIs[msg.sender]);
     }

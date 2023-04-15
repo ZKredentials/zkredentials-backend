@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract ZKredentialsGitHub is ERC721 {
+contract ZKredentialsTwitter is ERC721 {
     // Mapping to store user's IPFS URL
     mapping(address => string) private _tokenURIs;
     // Mapping to store user registration status
@@ -13,7 +13,7 @@ contract ZKredentialsGitHub is ERC721 {
     event Registered(address indexed user);
     event TokenURIUpdated(address indexed user, string tokenURI);
 
-    constructor() ERC721("ZKredentials GitHub", "ZKGH") {}
+    constructor() ERC721("ZKredentials GitHub", "ZKT") {}
 
     function mint(string memory cid) external {
         // Users can only have 1 NFT
