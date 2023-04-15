@@ -14,11 +14,11 @@ contract ZKredentialsWorldID is ERC721 {
     event TokenURIUpdated(address indexed user, string tokenURI);
     constructor() ERC721("ZKredentials WorldCoin", "ZKW") {}
 
-    function mint(address to, string memory cid) external {
+    function mint(string memory cid) external {
         // Users can only have 1 NFT
         register();
         setTokenURI(string(abi.encodePacked("ipfs://", cid, "/")));
-        _safeMint(to, tokenId);
+        _safeMint(msg.sender, tokenId);
         tokenId++;
     }
 
