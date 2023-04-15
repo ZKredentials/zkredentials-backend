@@ -12,7 +12,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
     log: true,
     args: [],
   });
-  await deploy('ZKredentialsWorldID', {
+  await deploy('ZKredentialsGitHub', {
     from: deployer,
     log: true,
     args: [],
