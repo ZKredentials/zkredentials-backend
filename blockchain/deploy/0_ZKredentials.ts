@@ -7,7 +7,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }: any) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("ZKredentialsWorldCoin", {
+  await deploy("ZKredentialsWorldID", {
     from: deployer,
     log: true,
     args: [],
