@@ -6,16 +6,26 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract ZKredentialsERC721 is ERC721 {
     // Mapping to store user's IPFS URL
-    mapping(uint256 => string) private _tokenURIs;
+    mapping(address => string) private _tokenURIs;
     // Mapping to store user registration status
-    mapping(uint256 => bool) private _registered;
+    mapping(address => bool) private _registered;
 
-    constructor() ERC721("ZKredentials", "ZKC") {}
+    event Registered(address indexed user);
+
+    constructor() ERC721("ZKredentials GitHub", "ZKG") {}
 
     function mint(address to, uint256 tokenId) public {
         // Users can only have 1 NFT
-        require(!_registered[tokenId], "User already registered");
+        require(!_registered[msg.sender], "User already registered");
         _safeMint(to, tokenId);
+    }
+
+    function register() external {
+        // Users can only have 1 NFT
+        require(!_registered[msg.sender], "User already registered");
+        _registered[msg.sender] = true;
+        emit Registered(msg.sender);
+
     }
 
     function setTokenURI(uint256 tokenId, string memory _tokenURI) public {
@@ -23,7 +33,7 @@ contract ZKredentialsERC721 is ERC721 {
             _exists(tokenId),
             "ERC721Metadata: URI set of nonexistent token"
         );
-        _tokenURIs[tokenId] = _tokenURI;
+        _tokenURIs[msg.sender] = _tokenURI;
     }
 
     function tokenURI(
@@ -34,7 +44,7 @@ contract ZKredentialsERC721 is ERC721 {
             "ERC721Metadata: URI query for nonexistent token"
         );
 
-        string memory _tokenURI = _tokenURIs[tokenId];
+        string memory _tokenURI = _tokenURIs[msg.sender];
         return _tokenURI;
     }
 }
