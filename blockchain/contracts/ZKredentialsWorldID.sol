@@ -12,7 +12,7 @@ contract ZKredentialsWorldID is ERC721 {
     uint256 public tokenId = 1;
     event Registered(address indexed user);
     event TokenURIUpdated(address indexed user, string tokenURI);
-    constructor() ERC721("ZKredentials WorldCoin", "ZKW") {}
+    constructor() ERC721("ZKredentials WorldID", "ZKWID") {}
 
     function mint(string memory cid) external {
         // Users can only have 1 NFT
