@@ -102,24 +102,34 @@ app.post("/generate", async (req, res) => {
     const starred = +gqlres.viewer.repositories.nodes[0].stargazerCount
     const prs = +gqlres.viewer.pullRequests.totalCount
     // // Generate ZK-SNARK proof for number of contributions
-    const sponsorProof = await generateProof(sponsors, sponsorsThreshold);
-    const starredProof = await generateProof(starred, starredThreshold);
-    const prsProof = await generateProof(prs, prsThreshold);
-    const sponsorProofFile = await makeStringFile(sponsorProof.proof, 'sponsorProof')
-    const sponsorProofFileCID = await storeFiles(sponsorProofFile)
-    const starredProofFile = await makeStringFile(starredProof.proof, 'starredProof')
-    const starredProofFileCID = await storeFiles(starredProofFile)
-    const prsProofFile = await makeStringFile(prsProof.proof, 'prsProof')
-    const prsProofFileCID = await storeFiles(prsProofFile)
+    let sponsorProofFileCID
+    if (sponsorsThreshold) {
+      const sponsorProof = await generateProof(sponsors, sponsorsThreshold);
+      const sponsorProofFile = await makeStringFile(sponsorProof.proof, 'sponsorProof')
+      sponsorProofFileCID = await storeFiles(sponsorProofFile)
+    }
+    let starredProofFileCID
+    if (starredThreshold) {
+      const starredProof = await generateProof(starred, starredThreshold);
+      const starredProofFile = await makeStringFile(starredProof.proof, 'starredProof')
+      starredProofFileCID = await storeFiles(starredProofFile)
+    }
+    let prsProofFileCID
+    if (prsThreshold) {
+      const prsProof = await generateProof(prs, prsThreshold);
+      const prsProofFile = await makeStringFile(prsProof.proof, 'prsProof')
+      prsProofFileCID = await storeFiles(prsProofFile)
+    }
 
     const resumeFile = await makeFileObjects({
       address,
-      prs: prsProofFileCID,
-      prsThreshold,
+      ...(prsThreshold && { prs: prsProofFileCID,
+        prsThreshold}),
       starred: starredProofFileCID,
-      starredThreshold,
-      sponsor: sponsorProofFileCID,
-      sponsorsThreshold
+      ...(starredThreshold && {       starred: starredProofFileCID,
+        starredThreshold,}),
+      ...(sponsorsThreshold && {       sponsor: sponsorProofFileCID,
+        sponsorsThreshold})
       }, 'resume')
     const resumeCID = await storeFiles(resumeFile)
     res.send({
