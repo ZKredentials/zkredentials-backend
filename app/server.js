@@ -105,19 +105,19 @@ app.post("/generate", async (req, res) => {
     let sponsorProofFileCID
     if (sponsorsThreshold) {
       const sponsorProof = await generateProof(sponsors, sponsorsThreshold);
-      const sponsorProofFile = await makeStringFile(sponsorProof.proof, 'sponsorProof')
+      const sponsorProofFile = await makeFileObjects(sponsorProof, 'sponsorProof')
       sponsorProofFileCID = await storeFiles(sponsorProofFile)
     }
     let starredProofFileCID
     if (starredThreshold) {
       const starredProof = await generateProof(starred, starredThreshold);
-      const starredProofFile = await makeStringFile(starredProof.proof, 'starredProof')
+      const starredProofFile = await makeFileObjects(starredProof, 'starredProof')
       starredProofFileCID = await storeFiles(starredProofFile)
     }
     let prsProofFileCID
     if (prsThreshold) {
       const prsProof = await generateProof(prs, prsThreshold);
-      const prsProofFile = await makeStringFile(prsProof.proof, 'prsProof')
+      const prsProofFile = await makeFileObjects(prsProof, 'prsProof')
       prsProofFileCID = await storeFiles(prsProofFile)
     }
 
@@ -125,7 +125,6 @@ app.post("/generate", async (req, res) => {
       address,
       ...(prsThreshold && { prs: prsProofFileCID,
         prsThreshold}),
-      starred: starredProofFileCID,
       ...(starredThreshold && {       starred: starredProofFileCID,
         starredThreshold,}),
       ...(sponsorsThreshold && {       sponsor: sponsorProofFileCID,
