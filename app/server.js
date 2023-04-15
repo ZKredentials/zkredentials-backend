@@ -133,6 +133,24 @@ app.post("/generate", async (req, res) => {
   }
 });
 
+app.post("/generateworld", async (req, res) => {
+  try {
+    const address = req.body.address;
+    // // Generate ZK-SNARK proof for number of contributions
+    const worldProof = await generateProof(1, 0);
+    const worldProofFile = await makeStringFile(worldProof.proof, 'worldProof')
+    const worldProofFileCID = await storeFiles(worldProofFile)
+    res.send({
+      cid: worldProofFileCID
+    });
+  } catch (error) {
+    console.log(error)
+    res.send({
+      e: error,
+    });
+  }
+});
+
 app.post("/stats", async (req, res) => {
   try {
     const access_token = req.body.token;
