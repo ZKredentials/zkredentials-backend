@@ -217,7 +217,7 @@ app.get("/github/callback", async (req, res) => {
     );
     let data = response.data;
     const access_token = data.split("=")[1].split("&")[0];
-    res.redirect("http://localhost:3000/github/callback?access_token="+access_token);
+    res.redirect("https://zkredentials-interface.vercel.app/github/callback?access_token="+access_token);
   } catch (error) {
     res.send({
       e: error,
