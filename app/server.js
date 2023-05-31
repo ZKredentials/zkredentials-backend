@@ -73,6 +73,8 @@ app.post("/generate", async (req, res) => {
     const sponsorsThreshold = req.body.sponsors;
     const starredThreshold = req.body.starred;
     const prsThreshold = req.body.prs;
+    const organizationsThreshold = req.body.organizations
+    const repositoriesContributedToThreshold = req.body.repositoriesContributedTo
     const graphQLClient = new GraphQLClient("https://api.github.com/graphql", {
       headers: {
         authorization: `Bearer ${access_token}`,
@@ -83,6 +85,12 @@ app.post("/generate", async (req, res) => {
         viewer { 
           login
           sponsors {
+            totalCount
+          }
+          organizations {
+            totalCount
+          }
+          repositoriesContributedTo {
             totalCount
           }
           repositories(first: 1, orderBy: {field:STARGAZERS, direction: DESC}) {
@@ -101,6 +109,8 @@ app.post("/generate", async (req, res) => {
     const sponsors = +gqlres.viewer.sponsors.totalCount
     const starred = +gqlres.viewer.repositories.nodes[0].stargazerCount
     const prs = +gqlres.viewer.pullRequests.totalCount
+    const organizations = +gqlres.viewer.organizations.totalCount
+    const repositoriesContributedTo = +gqlres.viewer.repositoriesContributedTo.totalCount
     // // Generate ZK-SNARK proof for number of contributions
     let sponsorProofFileCID
     if (sponsorsThreshold) {
@@ -120,6 +130,18 @@ app.post("/generate", async (req, res) => {
       const prsProofFile = await makeFileObjects(prsProof, 'prsProof')
       prsProofFileCID = await storeFiles(prsProofFile)
     }
+    let organizationsProofFileCID
+    if (organizationsProofFileCID) {
+      const organizationsProof = await generateProof(organizations, organizationsThreshold);
+      const organizationsProofFile = await makeFileObjects(organizationsProof, 'organizationsProof')
+      organizationsProofFileCID = await storeFiles(organizationsProofFile)
+    }
+    let repositoriesContributedToProofFileCID
+    if (repositoriesContributedToThreshold) {
+      const repositoriesContributedToProof = await generateProof(repositoriesContributedTo, repositoriesContributedToThreshold);
+      const repositoriesContributedToProofFile = await makeFileObjects(repositoriesContributedToProof, 'repositoriesContributedToProof')
+      repositoriesContributedToProofFileCID = await storeFiles(repositoriesContributedToProofFile)
+    }
 
     const resumeFile = await makeFileObjects({
       address,
@@ -128,7 +150,11 @@ app.post("/generate", async (req, res) => {
       ...(starredThreshold && {       starred: starredProofFileCID,
         starredThreshold,}),
       ...(sponsorsThreshold && {       sponsor: sponsorProofFileCID,
-        sponsorsThreshold})
+        sponsorsThreshold}),
+      ...(organizationsThreshold && {       organizations: organizationsProofFileCID,
+        organizationsThreshold}),
+      ...(repositoriesContributedToThreshold && {       repositoriesContributedTo: repositoriesContributedToProofFileCID,
+        repositoriesContributedToThreshold})
       }, 'resume')
     const resumeCID = await storeFiles(resumeFile)
     res.send({
@@ -182,6 +208,12 @@ app.post("/stats", async (req, res) => {
               stargazerCount
             }
           }
+          organizations {
+            totalCount
+          }
+          repositoriesContributedTo {
+            totalCount
+          }
           pullRequests{
             totalCount
           }
@@ -190,6 +222,8 @@ app.post("/stats", async (req, res) => {
     `)
     console.log(gqlres.viewer.repositories)
     res.send({
+      organizations: gqlres.viewer.organizations.totalCount,
+      repositoriesContributedTo: gqlres.viewer.repositoriesContributedTo.totalCount,
       sponsors: gqlres.viewer.sponsors.totalCount,
       starred: gqlres.viewer.repositories.nodes[0].stargazerCount,
       prs: gqlres.viewer.pullRequests.totalCount
